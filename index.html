@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>泡泡豆苗 🫧🌙</title>
+
+    <link rel="icon" type="image/png" href="assets/img/icon.png" />
+    <link rel="apple-touch-icon" href="assets/img/icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/img/icon.png" />
+    <link rel="apple-touch-icon" href="assets/img/icon.png" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.global.prod.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <!-- DECO -->
+      <div class="deco-layer">
+        <div class="deco-star" style="top: 5%; left: 5%; animation-delay: 0s">⭐</div>
+        <div class="deco-star" style="top: 9%; right: 8%; animation-delay: 1.2s; font-size: 1.3rem">
+          ✨
+        </div>
+        <div class="deco-star" style="top: 28%; left: 2%; animation-delay: 0.6s; font-size: 1.2rem">
+          🌟
+        </div>
+        <div class="deco-star" style="top: 50%; right: 3%; animation-delay: 2s; font-size: 1.4rem">
+          ⭐
+        </div>
+        <div class="deco-star" style="top: 72%; left: 6%; animation-delay: 1.5s; font-size: 1rem">
+          ✨
+        </div>
+        <div
+          class="deco-star"
+          style="top: 85%; right: 7%; animation-delay: 0.3s; font-size: 1.3rem"
+        >
+          🌟
+        </div>
+      </div>
+
+      <div class="app">
+        <!-- HEADER -->
+        <header>
+          <div class="header-bubble">🫧</div>
+          <div class="site-title">泡泡豆苗</div>
+          <div class="site-sub">記錄每一個奇妙的夜晚 🫧</div>
+        </header>
+
+        <!-- STATS -->
+        <div class="stats-bar">
+          <div class="stat-card">
+            <div class="stat-icon">📖</div>
+            <div class="stat-num">{{ dreams.length }}</div>
+            <div class="stat-label">夢境記錄</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🌈</div>
+            <div class="stat-num">{{ countByMood('good') }}</div>
+            <div class="stat-label">好夢</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">👻</div>
+            <div class="stat-num">{{ countByMood('bad') }}</div>
+            <div class="stat-label">惡夢</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📆</div>
+            <div class="stat-num">{{ uniqueDays }}</div>
+            <div class="stat-label">記錄天數</div>
+          </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs">
+          <button
+            v-for="tab in tabs"
+            :key="tab.id"
+            class="tab-btn"
+            :class="{ active: currentTab === tab.id }"
+            @click="currentTab = tab.id"
+          >
+            {{ tab.label }}
+          </button>
+        </div>
+
+        <!-- ══ RECORD ══ -->
+        <div v-if="currentTab === 'record'" class="view-enter-active">
+          <div class="form-card">
+            <div class="form-row">
+              <div class="section-label">📅 哪一天的夢？</div>
+              <input type="date" v-model="form.date" class="fun-input" />
+            </div>
+
+            <div class="form-row">
+              <div class="section-label">
+                ✏️ 幫這個夢取個名字
+                <span style="font-size: 0.75rem; color: var(--muted); font-weight: 400"
+                  >(選填)</span
+                >
+              </div>
+              <input
+                type="text"
+                v-model="form.title"
+                class="fun-input"
+                placeholder="例如：飛向宇宙大冒險 🚀"
+              />
+            </div>
+
+            <div class="form-row">
+              <div class="section-label">🎭 這個夢是什麼感覺？</div>
+              <div class="mood-grid">
+                <button
+                  v-for="m in moods"
+                  :key="m.value"
+                  class="mood-btn"
+                  :class="{ ['sel-'+m.value]: form.mood === m.value }"
+                  @click="form.mood = m.value"
+                >
+                  {{ m.emoji }} {{ m.label }}
+                </button>
+              </div>
+            </div>
+
+            <template v-if="form.mood && form.mood !== 'none'">
+              <div class="form-row">
+                <div class="section-label">💭 夢裡發生了什麼事？</div>
+                <textarea
+                  v-model="form.content"
+                  class="fun-input"
+                  placeholder="把夢境寫下來！場景、人物、奇怪的事都可以…"
+                ></textarea>
+              </div>
+              <div class="form-row">
+                <div class="section-label">🏷️ 夢境標籤</div>
+                <div class="tag-wrap">
+                  <input
+                    type="text"
+                    v-model="tagInput"
+                    class="fun-input"
+                    placeholder="輸入關鍵字，例如：飛翔 家人 海洋"
+                    @keydown.enter.prevent="addTag"
+                  />
+                  <button class="tag-add-btn" @click="addTag">+</button>
+                </div>
+                <div class="tags-cloud">
+                  <span class="tag-chip" v-for="(t, i) in form.tags" :key="i">
+                    {{ t }}<button @click="removeTag(i)">×</button>
+                  </span>
+                </div>
+              </div>
+            </template>
+
+            <button class="save-btn" :disabled="saving" @click="saveDream">
+              {{ saving ? '☁️ 儲存中…' : '儲存這個夢！' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- ══ LOG ══ -->
+        <div v-if="currentTab === 'log'" class="view-enter-active">
+          <div class="filter-bar">
+            <button
+              v-for="f in filters"
+              :key="f.value"
+              class="filter-chip"
+              :class="filterChipClass(f.value)"
+              @click="currentFilter = f.value"
+            >
+              {{ f.label }}
+            </button>
+            <input
+              class="filter-search"
+              type="text"
+              v-model="searchQuery"
+              placeholder="🔍 搜尋夢境關鍵字…"
+            />
+          </div>
+
+          <div class="dream-list">
+            <template v-if="loading">
+              <div class="empty-state">
+                <span class="empty-big">⏳</span>
+                <p>正在從雲端讀取夢境…</p>
+              </div>
+            </template>
+            <template v-else-if="filteredDreams.length === 0">
+              <div class="empty-state">
+                <span class="empty-big">🌙</span>
+                <p>這裡還沒有夢境記錄喔！<br />快去記下你的第一個夢吧～</p>
+              </div>
+            </template>
+            <template v-else>
+              <div
+                v-for="d in filteredDreams"
+                :key="d.id"
+                class="dream-card"
+                :class="d.mood"
+                @click="openModal(d)"
+              >
+                <div class="dc-top">
+                  <div>
+                    <div class="dc-title">
+                      {{ d.title || (d.mood === 'none' ? '💤 無夢之夜' : '🌙 無題夢境') }}
+                    </div>
+                    <span class="dc-badge" :class="moodMeta[d.mood]?.cls"
+                      >{{ moodMeta[d.mood]?.emoji }} {{ moodMeta[d.mood]?.label }}</span
+                    >
+                  </div>
+                  <div
+                    style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px"
+                  >
+                    <span class="dc-date">{{ fmtDate(d.date) }}</span>
+                    <button class="dc-del" @click.stop="deleteDream(d)">🗑️</button>
+                  </div>
+                </div>
+                <div v-if="d.content" class="dc-preview">{{ d.content }}</div>
+                <div v-if="d.tags?.length" class="dc-footer">
+                  <div class="dc-tags">
+                    <span class="dc-tag" v-for="t in d.tags" :key="t">{{ t }}</span>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- ══ ANALYTICS ══ -->
+        <div v-if="currentTab === 'analytics'" class="view-enter-active">
+          <div class="analytics-grid">
+            <div class="a-card">
+              <h3>🎂 夢境類型比例</h3>
+              <div class="donut-wrap">
+                <canvas ref="donutCanvas" width="114" height="114"></canvas>
+                <div class="donut-legend">
+                  <div class="leg-item" v-for="s in donutSegs" :key="s.label">
+                    <span class="leg-dot" :style="{ background: s.col }"></span>
+                    {{ s.label }}
+                    <span class="leg-n">{{ s.v }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="a-card">
+              <h3>📆 記錄天數</h3>
+              <div class="streak-box">
+                <span class="streak-icon"
+                  >{{ uniqueDays >= 10 ? '🏆' : uniqueDays >= 5 ? '🔥' : uniqueDays >= 1 ? '⭐' :
+                  '💫' }}</span
+                >
+                <div class="streak-num">{{ uniqueDays }}</div>
+                <div class="streak-label">天有記錄夢境</div>
+              </div>
+              <div class="streak-sub">
+                {{ uniqueDays > 0 ? `你已經記錄了 ${uniqueDays} 天的夢境，好棒！` :
+                '還沒有任何記錄，快去寫下第一個夢吧！' }}
+              </div>
+            </div>
+
+            <div class="a-card">
+              <h3>🏷️ 最常出現的主題</h3>
+              <div class="bar-chart">
+                <div v-if="tagStats.length === 0" style="color: var(--muted); font-weight: 700">
+                  還沒有標籤，快去記夢吧！
+                </div>
+                <div class="bar-row" v-for="(ts, i) in tagStats" :key="ts.tag">
+                  <div class="bar-name">{{ ts.tag }}</div>
+                  <div class="bar-track">
+                    <div
+                      class="bar-fill"
+                      :style="{ width: ts.pct + '%', background: barColors[i % barColors.length] }"
+                    ></div>
+                  </div>
+                  <div class="bar-n">{{ ts.count }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="a-card full">
+              <h3>📅 近 28 天夢境地圖</h3>
+              <div class="cal-header">
+                <div class="cal-day-lbl" v-for="d in ['日','一','二','三','四','五','六']" :key="d">
+                  {{ d }}
+                </div>
+              </div>
+              <div class="cal-grid">
+                <div
+                  v-for="(cell, i) in calCells"
+                  :key="i"
+                  class="cal-cell"
+                  :class="cell.cls"
+                  :title="cell.title"
+                  :style="cell.ghost ? 'opacity:.15' : ''"
+                ></div>
+              </div>
+              <div class="cal-legend">
+                <div class="cal-leg">
+                  <div class="cal-leg-dot" style="background: #aef0ce; border-color: #2aaa70"></div>
+                  好夢
+                </div>
+                <div class="cal-leg">
+                  <div
+                    class="cal-leg-dot"
+                    style="background: #ffbebe; border-color: var(--red)"
+                  ></div>
+                  惡夢
+                </div>
+                <div class="cal-leg">
+                  <div
+                    class="cal-leg-dot"
+                    style="background: #d8cfff; border-color: var(--lavender)"
+                  ></div>
+                  一般夢
+                </div>
+                <div class="cal-leg">
+                  <div
+                    class="cal-leg-dot"
+                    style="background: #ffedb3; border-color: var(--orange)"
+                  ></div>
+                  混合
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /app -->
+
+      <!-- MODAL -->
+      <transition name="modal">
+        <div class="modal-bg" v-if="modalDream" @click.self="modalDream = null">
+          <div class="modal-box">
+            <div class="modal-header">
+              <div class="modal-title">
+                {{ modalDream.title || (modalDream.mood === 'none' ? '💤 無夢之夜' : '🌙 無題夢境')
+                }}
+              </div>
+              <button class="modal-close" @click="modalDream = null">✕</button>
+            </div>
+            <div class="modal-meta">
+              <span class="modal-date">{{ fmtDate(modalDream.date) }}</span>
+              <span class="dc-badge" :class="moodMeta[modalDream.mood]?.cls">
+                {{ moodMeta[modalDream.mood]?.emoji }} {{ moodMeta[modalDream.mood]?.label }}
+              </span>
+            </div>
+            <div class="modal-body">
+              {{ modalDream.content || (modalDream.mood === 'none' ? '這一晚沒有夢境。' : '') }}
+            </div>
+            <div class="modal-tags">
+              <span class="modal-tag" v-for="t in modalDream.tags" :key="t">{{ t }}</span>
+            </div>
+          </div>
+        </div>
+      </transition>
+
+      <!-- TOAST -->
+      <transition name="toast">
+        <div
+          class="toast"
+          v-if="toast.show"
+          :style="{ background: toast.err ? '#ffe0e0' : 'white', borderColor: toast.err ? 'var(--red)' : 'var(--ink)' }"
+        >
+          {{ toast.msg }}
+        </div>
+      </transition>
+    </div>
+
+    <script src="assets/js/index.js"></script>
+  </body>
+</html>
