@@ -365,6 +365,13 @@ textarea.fun-input {
   box-shadow: 3px 3px 0 #6b20b0;
   transform: translateY(-2px) scale(1.07);
 }
+.mood-btn.sel-forgot {
+  background: #dce8f0;
+  border-color: #5a82a0;
+  color: #2d5268;
+  box-shadow: 3px 3px 0 #2d5268;
+  transform: translateY(-2px) scale(1.07);
+}
 
 /* ── TAGS ── */
 .tag-wrap {
