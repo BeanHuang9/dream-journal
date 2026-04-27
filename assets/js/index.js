@@ -109,6 +109,7 @@ createApp({
       try {
         await fetch(API, {
           method: 'POST',
+          mode: 'no-cors',
           body: JSON.stringify({ action: 'add', ...form.value }),
         });
         dreams.value.unshift({ ...form.value, id: Date.now() });
@@ -125,6 +126,7 @@ createApp({
       try {
         await fetch(API, {
           method: 'POST',
+          mode: 'no-cors',
           body: JSON.stringify({
             action: 'delete',
             date: dream.date,
