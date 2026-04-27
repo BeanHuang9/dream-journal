@@ -17,6 +17,7 @@ createApp({
       { value: 'neutral', emoji: '☁️', label: '一般般的夢' },
       { value: 'weird', emoji: '🌀', label: '困惑的怪夢' },
       { value: 'none', emoji: '💤', label: '這晚沒做夢' },
+      { value: 'forgot', emoji: '🌫️', label: '夢了忘光光' },
     ];
     const moodMeta = {
       good: { emoji: '🌈', label: '好夢', cls: 'bg-good' },
@@ -24,6 +25,7 @@ createApp({
       neutral: { emoji: '☁️', label: '一般夢', cls: 'bg-neutral' },
       weird: { emoji: '🌀', label: '怪夢', cls: 'bg-weird' },
       none: { emoji: '💤', label: '沒做夢', cls: 'bg-none' },
+      forgot: { emoji: '🌫️', label: '忘記了', cls: 'bg-forgot' },
     };
     const filters = [
       { value: 'all', label: '全部 🌀' },
@@ -32,6 +34,7 @@ createApp({
       { value: 'neutral', label: '一般 ☁️' },
       { value: 'weird', label: '怪夢 🌀' },
       { value: 'none', label: '無夢 💤' },
+      { value: 'forgot', label: '忘記 🌫️' },
     ];
     const barColors = [
       '#ffd95c',
@@ -97,7 +100,7 @@ createApp({
         showToast('🎭 選一下夢境類型～', true);
         return;
       }
-      if (form.value.mood !== 'none' && !form.value.content) {
+      if (form.value.mood !== 'none' && form.value.mood !== 'forgot' && !form.value.content) {
         showToast('💭 把夢境寫下來吧！', true);
         return;
       }
@@ -177,7 +180,7 @@ createApp({
     });
 
     const donutSegs = computed(() => {
-      const cnt = { good: 0, bad: 0, neutral: 0, weird: 0, none: 0 };
+      const cnt = { good: 0, bad: 0, neutral: 0, weird: 0, none: 0, forgot: 0 };
       dreams.value.forEach((d) => {
         if (cnt[d.mood] !== undefined) cnt[d.mood]++;
       });
@@ -187,6 +190,7 @@ createApp({
         { label: '一般 ☁️', v: cnt.neutral, col: '#b49eff' },
         { label: '怪夢 🌀', v: cnt.weird, col: '#c084fc' },
         { label: '無夢 💤', v: cnt.none, col: '#ffb38a' },
+        { label: '忘記 🌫️', v: cnt.forgot, col: '#b0c4de' },
       ];
     });
 

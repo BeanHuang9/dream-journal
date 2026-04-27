@@ -125,7 +125,7 @@
               </div>
             </div>
 
-            <template v-if="form.mood && form.mood !== 'none'">
+            <template v-if="form.mood && form.mood !== 'none' && form.mood !== 'forgot'">
               <div class="form-row">
                 <div class="section-label">💭 夢裡發生了什麼事？</div>
                 <textarea
@@ -204,7 +204,7 @@
                 <div class="dc-top">
                   <div>
                     <div class="dc-title">
-                      {{ d.title || (d.mood === 'none' ? '💤 無夢之夜' : '🌙 無題夢境') }}
+                      {{ d.title || (d.mood === 'none' ? '💤 無夢之夜' : d.mood === 'forgot' ? '🌫️ 醒來忘光光' : '🌙 無題夢境') }}
                     </div>
                     <span class="dc-badge" :class="moodMeta[d.mood]?.cls"
                       >{{ moodMeta[d.mood]?.emoji }} {{ moodMeta[d.mood]?.label }}</span
@@ -336,7 +336,7 @@
           <div class="modal-box">
             <div class="modal-header">
               <div class="modal-title">
-                {{ modalDream.title || (modalDream.mood === 'none' ? '💤 無夢之夜' : '🌙 無題夢境')
+                {{ modalDream.title || (modalDream.mood === 'none' ? '💤 無夢之夜' : modalDream.mood === 'forgot' ? '🌫️ 醒來忘光光' : '🌙 無題夢境')
                 }}
               </div>
               <button class="modal-close" @click="modalDream = null">✕</button>
@@ -348,7 +348,7 @@
               </span>
             </div>
             <div class="modal-body">
-              {{ modalDream.content || (modalDream.mood === 'none' ? '這一晚沒有夢境。' : '') }}
+              {{ modalDream.content || (modalDream.mood === 'none' ? '這一晚沒有夢境。' : modalDream.mood === 'forgot' ? '有做夢，但醒來後全都忘光了。' : '') }}
             </div>
             <div class="modal-tags">
               <span class="modal-tag" v-for="t in modalDream.tags" :key="t">{{ t }}</span>
