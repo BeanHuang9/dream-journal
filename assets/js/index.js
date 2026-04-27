@@ -83,7 +83,7 @@ createApp({
         const res = await fetch(API);
         const json = await res.json();
         if (json.ok) {
-          dreams.value = json.data.map((d, i) => ({ ...d, id: i + 1 })).reverse();
+          dreams.value = json.data.map((d, i) => ({ ...d, id: i + 1, date: String(d.date).split('T')[0] })).reverse();
         }
       } catch {
         showToast('⚠️ 無法連線到 Google Sheets', true);
