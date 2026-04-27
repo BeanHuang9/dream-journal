@@ -225,9 +225,14 @@ createApp({
         const moods = bd[ds] || [];
         let cls = '';
         if (moods.length) {
-          const g = moods.includes('good'),
-            b = moods.includes('bad');
-          cls = g && b ? 'cm' : g ? 'cg' : b ? 'cb' : 'cn';
+          const unique = [...new Set(moods)];
+          if (unique.length > 1) {
+            cls = 'cm';
+          } else {
+            const m = unique[0];
+            cls = m === 'good' ? 'cg' : m === 'bad' ? 'cb' : m === 'neutral' ? 'cn'
+                : m === 'weird' ? 'cw' : m === 'none' ? 'cno' : m === 'forgot' ? 'cf' : 'cn';
+          }
         }
         const ml = moods.map((m) => moodMeta[m]?.label || m).join('/');
         cells.push({ cls, ghost: false, title: ds + (ml ? ' · ' + ml : '') });

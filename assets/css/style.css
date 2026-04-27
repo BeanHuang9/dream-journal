@@ -916,6 +916,18 @@ textarea.fun-input {
   background: #ffedb3;
   border-color: var(--orange);
 }
+.cal-cell.cw {
+  background: #f3e8ff;
+  border-color: #9b4de0;
+}
+.cal-cell.cno {
+  background: #fff2de;
+  border-color: #c27a10;
+}
+.cal-cell.cf {
+  background: #dce8f0;
+  border-color: #5a82a0;
+}
 .cal-legend {
   display: flex;
   gap: 14px;
