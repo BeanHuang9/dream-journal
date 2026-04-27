@@ -216,7 +216,7 @@ createApp({
       // leading ghost cells
       const first = new Date();
       first.setDate(first.getDate() - 27);
-      for (let p = 0; p < first.getDay(); p++) cells.push({ cls: '', ghost: true, title: '' });
+      for (let p = 0; p < first.getDay(); p++) cells.push({ cls: '', ghost: true, title: '', day: '' });
       // actual 28 days
       for (let i = 27; i >= 0; i--) {
         const dt = new Date();
@@ -235,7 +235,7 @@ createApp({
           }
         }
         const ml = moods.map((m) => moodMeta[m]?.label || m).join('/');
-        cells.push({ cls, ghost: false, title: ds + (ml ? ' · ' + ml : '') });
+        cells.push({ cls, ghost: false, title: ds + (ml ? ' · ' + ml : ''), day: dt.getDate() });
       }
       return cells;
     });

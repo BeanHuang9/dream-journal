@@ -895,6 +895,14 @@ textarea.fun-input {
   background: var(--cream);
   border: 2px solid rgba(45, 32, 64, 0.1);
   transition: transform 0.15s;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 4px 5px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(45, 32, 64, 0.45);
+  line-height: 1;
 }
 .cal-cell:hover {
   transform: scale(1.3);
